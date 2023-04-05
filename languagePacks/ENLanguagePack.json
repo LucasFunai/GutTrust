@@ -1,0 +1,20 @@
+{
+    "main_settings" : "Settings",
+    "main_moodButton" : "Register Mood",
+    "main_foodButton" : "Register Food",
+    "mood_explanation" : "How are you feeling today?",
+    "mood_stomach" : "Stomach",
+    "mood_skin" : "Skin",
+    "mood_body": "Body (Tiredness, Pain, etc)",
+    "universal_confirm" : "Confirm",
+    "universal_cancel" : "Cancel",
+    "food_placeholder" : "Add foods here from the dropdown list!"
+
+
+
+
+
+
+
+
+}
