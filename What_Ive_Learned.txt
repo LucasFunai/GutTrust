@@ -1,0 +1,45 @@
+This is not going anywhere.
+I've been circling around the problem, but insisting in this project is not netting me any more results in studying.
+
+1. I knew that getting only weeks worth of user input and training on it would not be ideal dataset, but I overestimated
+an AI's abilities to make predictions regardless.
+Even when a food had 3 times more chance of making a person feel sick, it failed to correctly identify the food 2/5 times,
+and even when it made reasonable predictions, places were off by one or two, where its supposed place (first place in risks)
+was taken by a completely random food.
+THE CLIENT COULD BE EATING LITERAL POISON, AND MY CODE WOULD NOT NOTICE.
+
+The task was impossible. Any change in the AI would reduce LOSS, but not VAL_LOSS. I've plotted it into a graph several times,
+and LOSS would go from 8 to 2, while VAL_LOSS was stuck at 2.5, in a straight line.
+
+2. My architecture was horrible.
+I thought I did enough planning, but that is not what happened.
+As I kept going, there were problems with dependency injection, which made me switch architectures 3 times.
+It messed up the code to the point of no return.
+..But how was there no return?
+
+3. I did not use git properly.
+The working version of my code is forever lost. There was a moment where the GUI, the I/O, and the database worked well, but the
+AI was not working.
+Now the AI is at its best state, but my code won't even run properly until the end.
+
+4. Kivy's documentation was not good.
+It had several updates, but it was always hard to browse through what actually changed.
+I was wasting more time wresling with the documentation than I did coding.
+
+So what have I learned?
+
+AI's are not good at small data. It is used on big data, scraped off the internet or obtained from archives for a reason.
+
+Git is really important.
+
+How to use Kivy
+
+How to test and tune an AI.
+
+How to create automatic unittests.
+
+What should I do next?
+
+Now that I've learned DevOps, I should try making a decent life cycle for once.
+
+Focus more on architecture next.

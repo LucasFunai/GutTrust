@@ -1,0 +1,98 @@
+Interfaces:
+UI, responsible for recieving input
+Service, responsible for anything that needs to be processed and relayed to the UI.
+Inside service, AI is included, which is responsible for returning predictions.
+IO, responsible for storing the input, and passing it to whatever class needs it.
+
+Requirements:
+  UI:
+    foodConfirmed(self, idList):
+      Needs access to IO and add foods to the DB
+    moodConfirmed(self, stomach, skin, body):
+      Needs access to IO and add the daily mood report to the DB
+    mealConfirmed(self, listAndName):
+      Needs access to IO and add another food combination to the local file
+    newFoodConfirmed(self):
+      Needs access to IO to add new food
+    getJsonText(self, identifier):
+      Needs access to IO to access local json file.
+    
+    All the methods above are dependant on IO, as they need
+    to save or load data.
+    This means that the service layer also needs access on IO.
+
+    startTraining(self):
+
+    And the method above is dependant on AI, or the service layer.
+  
+  Service:
+    self.foodList()
+    self.mealDict()
+    self.aiModel()
+
+    getFoodList()
+    addFoodList()
+    undoLastSave()
+    getLocalJson()
+
+    All of the above get the needed data from the IO's 
+    data object representation.
+
+    saveModifications():
+      replicates all modifications into the IO class,
+      then calls IO.save() to make IO save them to the DB
+
+    getSuspects():
+      Gets suspect list from AI
+      AI:
+          train()
+          accuse()
+        training specification:
+          If less than 7 days of data, do not attempt to train.
+          If more than 7, but less than X days (needs to be tested), use normal equation.
+          If more than X days, use a neural network.
+        predicting specification:
+          Get all thetas, mean normalize them, 
+          and flag anything Y% bigger than mean.
+        Expected bugs:
+            At any moment, a variable might be added to the model. 
+            Total input size can never be predicted.
+              SOLUTION: Embedding layer converts indexes to floats in a range.
+              By limiting the maximum amount of foods to be recorded,
+              we can fit the constraint of "indexes of positive integers in a fixed range".
+              For now this limit will be 100.
+            
+            Data has really, REALLY high variance.
+              SOLUTION: A lot of preprocessing. 
+              Make sure to check graphs to make reasonable changes.
+
+
+        HOW TO MAKE A DIFFERENTIABLE CATEGORICAL CUSTOM LOSS:
+          1. Use MSE for linear loss
+          2. use the same y_pred y_true, and do the following:
+            2.1 -4 element-wise, then /3 element-wise
+            2.2 now round them using the following formula:
+              y = x - sin(2*pi*x) / 2 * pi
+          3. Use MSE again.
+          The formula above is a differentiable approximation of a rounding operation.
+          -4 element-wise will range the input from 1:7 to -3:3,
+          then dividing by 3 will make the first 2 elements be rounded to -1,
+          the middle 3 to 0, and the last 2 to 1.
+          Then using MSE again will get a different loss, with more weight on 
+          correctly guessing a vague idea of "Good, bad and normal".
+          This helps solve the problem of high variance from human input as datasets.
+
+  IO:
+    load()
+    save()
+
+
+  DB:
+    TABLE CALENDAR:
+      "TIME" DATE Primary Key, cannot be null
+      "MEAL" VARCHAR,
+      "MOOD" VARCHAR NOT NULL,
+      "TRAINED" INTEGER;
+
+
+    
