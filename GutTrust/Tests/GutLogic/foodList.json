@@ -1,0 +1,18 @@
+{
+  "Egg": 1,
+  "Milk": 2,
+  "Soy": 3,
+  "Wheat": 4,
+  "Peanuts": 5,
+  "Tree nuts": 6,
+  "Fish": 7,
+  "Shellfish": 8,
+  "Celery": 9,
+  "Gluten": 10,
+  "Mustard": 11,
+  "Sesame seeds": 12,
+  "Fruit and vegetables": 13,
+  "Meat": 14,
+  "Chicken": 15,
+  "Beef": 16
+}

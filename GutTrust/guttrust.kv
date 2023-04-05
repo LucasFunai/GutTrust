@@ -1,0 +1,401 @@
+#:kivy 1.9.1
+
+<MainLayout>:
+    canvas:
+        Color:
+            rgba: 1, 0.39, 0.11, 1
+        Rectangle:
+            pos: 0,0
+            size: self.width,self.height
+    BoxLayout:
+        size: self.parent.size
+        orientation: "vertical"   
+        RelativeLayout:
+            size: self.parent.size
+            Button:
+                id: settingButton
+                text: "Settings"
+                size_hint: (0.2,0.1)
+                pos_hint: {'right':1,'top':1}
+                on_press: root.settingButtonPress()
+            SuspectGraph:
+                size: self.parent.size
+                GraphOuterCircle:
+                    id: "graphEllipse"
+                    pos_hint:{'center_x':.5,'center_y':.5}
+                    size_hint: None,None #Remove Layout's automatic resizing
+                    width: self.parent.top * 0.6 #60% of height
+                    height: self.width #same as above to get good circle
+                    canvas:
+                        Color:
+                            rgba: .3,.3,.3,1
+                        Ellipse:
+                            size: self.size
+                            pos: self.pos
+                GraphInnerCircle:
+                    pos_hint:{'center_x':.5,'center_y':.5}
+                    size_hint: None,None
+                    width: self.parent.top * 0.4
+                    height: self.width
+                    canvas:
+                        Color:
+                            rgba: .5,.5,.5,1
+                        Ellipse:
+                            size: self.size
+                            pos: self.pos
+        RelativeLayout:      
+            FoodButton:
+                id: foodButton
+                text: "Register Food"
+                size_hint: .3,.1
+                pos_hint: {'center_x':0.5,'center_y':0.25}
+                on_press: root.foodButtonPress()
+            Button:
+                id: newFoodButton
+                text: "+Custom Food"
+                size_hint: .3,.1
+                pos_hint: {'center_x':0.5,'center_y':0.5}
+                on_press: root.customFoodPrompt()
+            Button:
+                id: newMealButton
+                text: "+Custom Meal"
+                size_hint: .3,.1
+                pos_hint: {'center_x':0.5,'y':0.75}
+                on_press: root.mealButtonPress()
+            Button:
+                id: TestButton
+                text: "Start test!"
+                size_hint: .3,.1
+                pos_hint: {'center_x':0.5,'y':1}
+                on_press: root.testButtonPress()
+
+
+<MoodPrompt>:
+    pos: 0,0
+    canvas:
+        Color:
+            rgba: 1,1,1,0.3
+        Rectangle:
+            pos: 0,0
+            size: self.size
+    BoxLayout:
+        orientation: 'vertical'
+        pos: 0,0
+        size: self.parent.size
+        Label:
+            id: moodTitle
+            text: "How are you feeling today?"
+        Label:
+            id: moodStomach
+            text: "Stomach"
+        Slider:
+            id: stomachScore
+            min: 1
+            max: 7
+            step: 1
+            orientation: 'horizontal'
+        Label:
+            id: stomachValue
+            text: str(stomachScore.value)
+        Label:
+            id: moodSkin
+            text: "Skin"
+        Slider:
+            id: skinScore
+            min: 1
+            max: 7
+            step: 1
+            orientation: 'horizontal'
+        Label:
+            id: skinValue
+            text: str(skinScore.value)
+        Label:
+            id: moodBody
+            text: "Body (Tiredness, Pain, etc)"
+        Slider:
+            id: bodyScore
+            min: 1
+            max: 7
+            step: 1
+            orientation: 'horizontal'
+        Label:
+            id: bodyValue
+            text: str(bodyScore.value)
+        Button:
+            text: "Confirm"
+            on_press: root.parent.moodConfirmed(stomachScore.value,skinScore.value,bodyScore.value)
+
+
+#Order by alphabet
+#Separate by category
+#Create confirmation prompt over this prompt later.
+<FoodPrompt>:
+    pos: 0,0
+    canvas:
+        Color:
+            rgba: 1,1,1,0.3
+        Rectangle:
+            pos: 0,0
+            size: self.size
+    BoxLayout:
+        id: boxContainer
+        orientation: 'vertical'
+        pos: 0,0
+        size: self.parent.size
+        RelativeLayout:
+            Button:
+                text: 'Select food'
+                on_release: foodDropDown.open(self)
+            DropDown:
+                id: foodDropDown
+                effect_cls: "ScrollEffect"
+                scroll_type: ['bars','content']
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            StackLayout:
+                id: foodStack
+                size_hint_x: 1
+                size_hint_y: None
+                RelativeLayout:
+                    id: foodLabelContainer
+                    Label:
+                        id: foodLabel
+                        text: "Add foods from the button above!"
+                        pos_hint: {'x': 0, 'y': 0}
+                        text_size: self.size
+                        halign: "center"
+                        valign: "center"
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                text: "Cancel"
+                on_press: root.parent.foodCancel()
+            Button:
+                text: "Confirm"
+                on_press: root.parent.foodConfirmed(root.returnIdsList())
+
+
+<NewFoodPrompt>:
+    id: newFoodPrompt
+    pos: 0,0
+    canvas:
+        Color:
+            rgba: 1,1,1,0.3
+        Rectangle:
+            pos: 0,0
+            size: self.size
+    BoxLayout:
+        id: boxContainer
+        orientation: 'vertical'
+        pos: 0,0
+        size: self.parent.size
+        FloatLayout:
+            width: self.parent.width
+            height: self.parent.height / 2
+            pos: 0,0
+            TextInput:
+                id: foodTextField
+                padding_y: ( self.height - self.line_height ) / 2
+                halign: "center"
+                hint_text: "Input the food's name!"
+                size_hint: (None,None)
+                size: (self.parent.width * 0.75,self.parent.height * 0.15)
+                pos_hint: {'center_x':0.5,'center_y':0.2}
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                size_hint: (0.5,0.2)
+                text: "Cancel"
+                on_press: newFoodPrompt.parent.newFoodCancel()
+            Button:
+                size_hint: (0.5,0.2)
+                text: "Confirm"
+                on_press: newFoodPrompt.parent.newFoodConfirmed()
+
+<MealPrompt>:
+    id: mealPrompt
+    pos: 0,0
+    canvas:
+        Color:
+            rgba: 1,1,1,0.3
+        Rectangle:
+            pos: 0,0
+            size: self.size
+    BoxLayout:
+        id: boxContainer
+        orientation: 'vertical'
+        pos: 0,0
+        size: self.parent.size
+        RelativeLayout:
+            TextInput:
+                id: mealName
+                hint_text: "Input the meal's name!"
+        RelativeLayout:
+            Button:
+                text: 'Select foods'
+                on_release: mealDropDown.open(self)
+            DropDown:
+                id: mealDropDown
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            StackLayout:
+                id: mealStack
+                size_hint_x: 1
+                size_hint_y: None
+                RelativeLayout:
+                    id: mealLabelContainer
+                    Label:
+                        id: mealLabel
+                        text: "Add foods to your meal with the button above!"
+                        pos_hint: {'x': 0, 'y': 0}
+                        text_size: self.size
+                        halign: "center"
+                        valign: "center"
+        BoxLayout:
+            orientation: 'horizontal'
+            Button:
+                text: "Cancel"
+                on_press: root.parent.mealCancel()
+            Button:
+                text: "Confirm"
+                on_press: root.parent.mealConfirmed(root.returnListNamePair())
+
+
+<AddFoodButton>:
+    height: 25
+    size_hint_y: None
+
+<RemoveFoodButton>:
+    size_hint: (0.33,0.3)
+
+<MealAddFoodButton>:
+    height: 25
+    size_hint_y: None
+
+<MealRemoveButton>:
+    size_hint: (0.33,0.3)
+
+#Kivy uses (x,y) contrary to what I expected.
+<TwoOptionPopup>:
+    size_hint: (0.85,0.4)
+    BoxLayout:
+        orientation: "vertical"
+        StackLayout:
+            size_hint: (1,0.8)
+            id: messageContainer
+            #Kivy widget anchor points is at left-bottom.
+            #parent.top - self.height = self.top overlapping parent.top
+            pos: (self.parent.x,self.parent.top - self.height)
+            Label:
+                halign: "center"
+                id: messageLabel
+                size_hint: (1,None)
+                text_size: (self.width,None)
+        StackLayout:
+            id: yesNoContainer
+            size_hint:(1,0.2)
+            Button:
+                size_hint:(0.5,1)
+                id: noButton
+                text: "No"
+                #Set on_press to an external method reference from __init__()
+            Button:
+                size_hint:(0.5,1)
+                id: yesButton
+                text: "Yes"
+                #Set on_press to an external method reference from __init__()
+            
+
+    
+<OneOptionPopup>:
+    id: popup
+    size_hint: (0.85,0.4)
+    BoxLayout:
+        orientation: "vertical"
+        StackLayout:
+            size_hint: (1,0.8)
+            id: messageContainer
+            #Kivy widget anchor points is at left-bottom.
+            #parent.top - self.height = self.top overlapping parent.top
+            pos: (self.parent.x,self.parent.top - self.height)
+            Label:
+                halign: "center"
+                id: messageLabel
+                size_hint: (1,None)
+                text_size: (self.width,None)
+        StackLayout:
+            id: yesNoContainer
+            size_hint:(1,0.2)
+            Button:
+                size_hint:(1,1)
+                id: closeButton
+                text: "Close"
+                on_press: popup.dismiss()
+                #Set on_press to an external method reference from __init__()
+        
+<SettingScreen>:
+    pos: 0,0
+    canvas:
+        Color:
+            rgba: 0.13, 0.55, 0.13, 1
+        Rectangle:
+            pos: 0,0
+            size: self.size
+    RelativeLayout:
+        orientation: "vertical"
+        size: self.parent.size
+        pos: 0,0
+        Button:
+            size_hint: (0.2,0.1)
+            pos_hint: {"right":1,"top":1}
+            text: "Return"
+            on_press: root.parent.settingCancel()
+        Button:
+            size_hint: (0.4,0.2)
+            pos_hint: {"center_x":0.5,"center_y":0.3}
+            text: "Reset food-list"
+            on_press: root.parent.foodResetPress()
+        Button:
+            size_hint: (0.4,0.2)
+            pos_hint: {"center_x":0.5,"center_y":0.6}
+            text: "Reset history"
+            on_press: root.parent.historyResetPress()
+
+<SuccessBanner>:
+    id: successBanner
+    pos:(0,0)
+    FloatLayout:
+        size: root.size
+        Button:
+            pos_hint:{"top":0.2,"center_x":0.5}
+            size_hint:(1,0.2)
+            id: bannerButton
+            text: "Success!"
+
+<PieSlice>:
+    canvas:
+        Color:
+            rgba: root.r,root.g,root.b,1
+        Ellipse:
+            angle_start: root.angleStart
+            angle_end: root.angleEnd
+        
+        
+            
+    
+        
+                    
+
+        
+    
+
+
+
+
+
+
+
+
+

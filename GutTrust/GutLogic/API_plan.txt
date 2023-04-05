@@ -1,0 +1,72 @@
+CURRENT PLAN FOR API:
+
+Root (MainLayout):
+    For every button, there will be a pressButtonName() function.
+
+    The root class is only responsible for manipulating the GUI based on inputs,
+    and is NOT SUPPOSED TO HOLD INFORMATION BY ITSELF IF ANOTHER CLASS IS MORE SUITABLE.
+
+    Has a list widgetList which holds (name,reference) tuples for quick access to widgets.
+
+    findWidget(name):
+        from widgetList, find a tuple with a matching name to "name", and Return
+        the reference it is holding.
+
+        current list of recognized names:
+            foodPrompt = The entire layout of the screen for registering eaten food.
+
+            mealPrompt = The entire layout of the screen for registering custom foodSets.
+
+        Names that should NOT be stored:
+            Any inner nested widgets inside prompt objects.
+            Having to hold reference to those means you are breaking SOLID.
+
+
+
+    ???Cancel():
+        for every "prompt" widget it can instantiate, it will have a promptNameCancel()
+        function for deleting it.
+        It is called by pressing a cancel button in the prompt, or the prompt itself calling it.
+
+        
+
+FoodPrompt:
+    Has a list() foodList, which holds tuples in the format:
+    (foodName,id)
+    where foodName is a String and id is an Integer.
+
+    ALL PARAMETERS PASSED TO FUNCTIONS FOR THE PURPOSE OF IDENTIFIYING FOODS,
+    SHOULD BE IN THIS FORMAT TO AVOID CONFUSION.
+
+    and has a StackLayout foodStack, which holds Buttons of the foods selected.
+    these buttons need to delete themselves, and remove its tuple from the list.
+
+    Root will supply the foodList by communicating with gutIO, but storing user input
+    and returning it in the correct format is to be done in this side.
+
+    addFood(foodName,id):
+        AddFoodButton will call this by holding a reference to the prompt, and firing this
+        function when clicked upon.
+
+        add the foodName-ID pair to foodList, and creates a RemoveFoodButton that when clicked,
+        reverses this action.
+
+    removeFood(firedButton):
+        RemoveFoodButton will call this by holding a reference to the prompt, and firing this
+        function when clicked upon.
+
+        remove the (firedButton.foodString,firedButton.id) pair from your own foodList, 
+        and remove the button that fired this from foodStack.
+
+    returnIdsList() -> list():
+        Return all ids from foodList, and reset foodList to an empty list.
+
+MealPrompt:
+    Based on FoodPrompt, but there is an added textInput.
+    When confirmed, creates an entry in the foodJson, where when confirmed,
+    makes an entry in Json with the chosen name, that adds all the foods selected at once.
+
+    addFood and removeFood is identical.
+
+    returnListNamePair() -> tuple:
+        returns a tuple (list,name) where list is foodList and name is the chosen name.
